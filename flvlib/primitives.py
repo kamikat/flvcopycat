@@ -5,10 +5,15 @@ The internal FLV representations of numbers.
 """
 
 
-__all__ = ['get_ui32', 'make_ui32', 'get_si32_extended', 'make_si32_extended',
+__all__ = ['get_ui32', 'make_ui32', 
+           'get_si32_extended', 'make_si32_extended',
            'get_ui24', 'make_ui24', 'get_ui16', 'make_ui16',
            'get_si16', 'make_si16', 'get_ui8', 'make_ui8',
-           'get_double', 'make_double', 'EndOfFile']
+           'get_double', 'make_double', 
+           'get_sd_string', 'make_sd_string', 
+           'get_sd_date', 'make_sd_date', 
+           'get_sd_long_string', 'make_sd_long_string', 
+           'EndOfFile']
 
 
 class EndOfFile(Exception):
@@ -104,3 +109,38 @@ def get_double(f):
 
 def make_double(num):
     return struct.pack(">d", num)
+
+#ScriptDataString
+
+def get_sd_string(f):
+    size = get_ui16(f)
+    return f.read(size)
+
+def make_sd_string(string):
+    data = make_ui16(len(string))
+    data += string.encode()
+    return data
+
+def get_sd_long_string(f):
+    size = get_ui32(f)
+    return f.read(size)
+
+def make_sd_long_string(string):
+    data = make_ui32(len(string))
+    data += string.encode()
+    return data
+
+#ScriptDataDate
+
+from datetime import datetime
+import time
+
+def get_sd_date(f):
+    date = get_double(f)
+    f.read(2)
+    return datetime.fromtimestamp(date)
+
+def make_sd_date(date):
+    data = make_double(time.mktime(date.timetuple()))
+    data += mk_ui16(8)
+    return data
