@@ -419,6 +419,8 @@ for f in fs:
             if lasttimestamp < tag.timestamp:
                 lasttimestamp = tag.timestamp
             if type(tag.data) == VideoTag:
+                if tag.data.frametype == 5:
+                    continue
                 if tag.data.frametype == 1 or tag.data.frametype == 4:
                     #Is Keyframe
                     if lastkeyframetimestamp < tag.timestamp:
@@ -426,7 +428,6 @@ for f in fs:
                         lastkeyframelocation = float(fo.tell() + 1)
             tag.write(fo)
     except Exception,e:
-        print e
         pass
     finally:
         f.close()
