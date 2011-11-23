@@ -127,6 +127,7 @@ def make_sd_date(date):
 import argparse, os
 import pprint
 import struct
+import sys
 
 parser = argparse.ArgumentParser(
         description='Concat flv files')
@@ -327,6 +328,7 @@ class ScriptObject(object):
                 'duration'  : 0,
                 'videosize' : 0,
                 'audiosize' : 0,
+                'datasize' : 0,
                 }
         for i in acculst:
             self.metadata[i] = (self.metadata[i][0],so.metadata[i][1] + self.metadata[i][1])
@@ -430,6 +432,7 @@ for f in fs:
                         lastkeyframelocation = float(fo.tell() + 1)
             tag.write(fo)
     except Exception,e:
+        print >>sys.stderr,datasize,"/",metadata.data.metadata['datasize'][1],"\r",
         pass
     finally:
         f.close()
