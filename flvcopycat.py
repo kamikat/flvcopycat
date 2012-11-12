@@ -137,7 +137,7 @@ parser.add_argument('inputs', nargs='+', type=str,
         help='flv files to be concated by order')
 args = parser.parse_args()
 
-output = args.output + ".tmp"
+output = args.output # + ".tmp"
 if os.path.exists(output):
     os.remove(output)
 
@@ -466,9 +466,9 @@ for f in fs:
 fo.close()
 
 #Open use ffmpeg fix a problem of original output
-os.system(
-    'ffmpeg -f flv -i "%s" -f flv -acodec copy -vcodec copy "%s" && rm "%s"' % \
-        (output,args.output,output))
+# os.system(
+#     'ffmpeg -f flv -i "%s" -f flv -acodec copy -vcodec copy "%s" && rm "%s"' % \
+#         (output,args.output,output))
 
 exit(0)
 
