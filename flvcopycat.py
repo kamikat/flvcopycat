@@ -413,6 +413,7 @@ lasttimestamp = float(0.0)
 lastkeyframetimestamp = float(0.0)
 lastkeyframelocation = float(0.0)
 timestampbase = float(0.0)
+framegap = 1000 / metadata.data.metadata["framerate"][1]
 
 for f in fs:
     try:
@@ -436,7 +437,7 @@ for f in fs:
         pass
     finally:
         f.close()
-    timestampbase = lasttimestamp
+    timestampbase = lasttimestamp + framegap
 
 fo.flush()
 #Finally Update the metadata
