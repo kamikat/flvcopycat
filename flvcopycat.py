@@ -263,7 +263,7 @@ class ScriptObject(object):
                 self.metadata[i] = (fieldtype, func(script))
         
         self.metadata['metadatacreator'] = \
-            (2,r"FLV CopyCat - by Hanenoshino".encode())
+            (2,r"FLVCopyCat - Shinohane".encode())
 
     def generate(self):
         funcs = {
@@ -284,7 +284,7 @@ class ScriptObject(object):
         out.write(make_ui8(8)) #Object Type: ECMA Array
         out.write(make_ui32(len(self.metadata))) #Array Size
         for k,v in self.metadata.items():
-            #print k,v[0],v[1]
+            if not v: continue
             out.write(make_sd_string(k))
             out.write(make_ui8(v[0]))
             out.write(funcs[v[0]](v[1]))
@@ -331,6 +331,7 @@ class ScriptObject(object):
                 'datasize' : 0,
                 }
         for i in acculst:
+            if not self.metadata[i]: continue
             self.metadata[i] = (self.metadata[i][0],so.metadata[i][1] + self.metadata[i][1])
         return self
 
@@ -433,7 +434,10 @@ for f in fs:
                         lastkeyframelocation = float(fo.tell() + 1)
             tag.write(fo)
     except Exception,e:
-        print >>sys.stderr,datasize,"/",metadata.data.metadata['datasize'][1],"\r",
+        if metadata.data.metadata['datasize']:
+            print >>sys.stderr,datasize,"/",metadata.data.metadata['datasize'][1],"\r",
+        else:
+            print >>sys.stderr,datasize,"/?","\r",
         pass
     finally:
         f.close()
@@ -444,17 +448,22 @@ fo.flush()
 if type(metadata) == FLVTag:
 
     #Update values accumulate while iterate files
-    metadata.data.metadata['datasize'] = \
+    if metadata.data.metadata['datasize']:
+        metadata.data.metadata['datasize'] = \
             (0, datasize)
-    metadata.data.metadata['lasttimestamp'] = \
+    if metadata.data.metadata['lasttimestamp']:
+        metadata.data.metadata['lasttimestamp'] = \
             (0, lasttimestamp)
-    metadata.data.metadata['lastkeyframetimestamp'] = \
+    if metadata.data.metadata['lastkeyframetimestamp']:
+        metadata.data.metadata['lastkeyframetimestamp'] = \
             (0, lastkeyframetimestamp)
-    metadata.data.metadata['lastkeyframelocation'] = \
+    if metadata.data.metadata['lastkeyframelocation']:
+        metadata.data.metadata['lastkeyframelocation'] = \
             (0, lastkeyframelocation)
     #Finally check the `filesize' field
     #Total file size minus the size of one additional prevTagSz field
-    metadata.data.metadata['filesize'] = \
+    if metadata.data.metadata['filesize']:
+        metadata.data.metadata['filesize'] = \
             (0, float(os.path.getsize(fo.name) - 4))
     fo.seek(metaposition)
     metadata.data.generate()
