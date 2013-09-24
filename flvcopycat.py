@@ -135,6 +135,8 @@ parser.add_argument('output', type=str,
         help='output file name for the flv file')
 parser.add_argument('inputs', nargs='+', type=str,
         help='flv files to be concated by order')
+parser.add_argument('--strict', action='store_true',
+                   help='Strict comparison of metadata (default: Round frame and sample rates to 2 decimal places')
 args = parser.parse_args()
 
 output = args.output # + ".tmp"
@@ -317,10 +319,17 @@ class ScriptObject(object):
                 'stereo'
                 ]
         for i in chklst:
-            if self.metadata[i] != so.metadata[i]:
-                print ">>>>>>>%s mismatch.\n%s\n-------\n%s" % \
-                        (i,self.metadata[i],so.metadata[i])
-                return False
+            print type(self.metadata[i])
+            if i[-4:] == 'rate' and not args.strict:
+                if round(self.metadata[i][1],1) != round(so.metadata[i][1],1):
+                    print ">>>>>>>%s mismatch.\n%s (%s)\n-------\n%s (%s)" % \
+                            (i,self.metadata[i],round(self.metadata[i][1],1),so.metadata[i],round(so.metadata[i][1],1))
+                    return False
+            else:
+                if self.metadata[i] != so.metadata[i]:
+                    print ">>>>>>>%s mismatch.\n%s\n-------\n%s" % \
+                            (i,self.metadata[i],so.metadata[i])
+                    return False
         return True
 
     def __add__(self, so):
