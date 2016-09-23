@@ -1,4 +1,4 @@
-FLVCopyCat
+flvcopycat
 ==========
 
 The project implement the concat of flv/hlv video files in a fast-copy
@@ -17,7 +17,7 @@ See `flvcopycat --help` for detail.
 License
 -------
 
-Copyright 2014 kirisetsz&lt;kirisetsz@gmail.com&gt;
+Copyright 2016 kamikat&lt;loli@banana.moe&gt;
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
